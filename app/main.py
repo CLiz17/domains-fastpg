@@ -1,20 +1,19 @@
 from fastapi import FastAPI, HTTPException, Depends
 from sqlalchemy.orm import Session
-from uuid import uuid4
-from app import models, database
+import uuid
+import datetime
+from . import models, database, schemas
 
 app = FastAPI()
 
 @app.post("/domains", status_code=201)
 def create_domain(domain: schemas.DomainCreate, db: Session = Depends(database.get_db)):
     try:
-        domain_id = uuid.uuid4()
-        https_enabled = domain.domain_name.startswith("https")
-        
+        domain_id = uuid.uuid4()        
         new_domain = models.Domain(
             domain_id=domain_id,
             domain_name=domain.domain_name,
-            created_time=datetime.utcnow(), 
+            created_time=datetime.datetime.utcnow(), 
             https_enabled=https_enabled 
         )
         
